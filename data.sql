@@ -1,4 +1,3 @@
--- Kiểm tra và tạo database
 IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'ShoppingServiceMVC')
 BEGIN
     CREATE DATABASE ShoppingServiceMVC;
@@ -8,13 +7,11 @@ GO
 USE ShoppingServiceMVC;
 GO
 
--- Xóa bảng theo thứ tự khóa ngoại để tránh lỗi xung đột khi chạy lại script
 DROP TABLE IF EXISTS dbo.products;
 DROP TABLE IF EXISTS dbo.Category;
 DROP TABLE IF EXISTS dbo.users;
 GO
 
--- 1. Tạo bảng Users (Chỉ khởi tạo duy nhất 1 tài khoản Admin)
 CREATE TABLE dbo.users (
                            user_id INT IDENTITY(1,1) NOT NULL,
                            username VARCHAR(50) NOT NULL,
@@ -23,7 +20,7 @@ CREATE TABLE dbo.users (
                            fullname NVARCHAR(100) NOT NULL,
                            phone VARCHAR(20) NULL,
                            avatar VARCHAR(255) NULL,
-                           roleid INT NOT NULL, -- 1: Admin, 2: User thường
+                           roleid INT NOT NULL,
                            created_date DATETIME NULL,
                            is_enable BIT NULL,
                            otp VARCHAR(10) NULL,
@@ -33,7 +30,6 @@ CREATE TABLE dbo.users (
 );
 GO
 
--- 2. Tạo bảng Category
 CREATE TABLE dbo.Category (
                               cate_id INT IDENTITY(1,1) NOT NULL,
                               cate_name NVARCHAR(255) NOT NULL,
@@ -43,7 +39,6 @@ CREATE TABLE dbo.Category (
 );
 GO
 
--- 3. Tạo bảng Products (Có thêm cột created_at)
 CREATE TABLE dbo.products (
                               product_id INT IDENTITY(1,1) NOT NULL,
                               product_name NVARCHAR(255) NOT NULL,
@@ -58,30 +53,22 @@ CREATE TABLE dbo.products (
 );
 GO
 
--- ==========================================
--- CHÈN DỮ LIỆU MẪU (SEED DATA)
--- ==========================================
-
--- Thêm 1 tài khoản Admin duy nhất
 INSERT INTO dbo.users (username, password, email, fullname, phone, avatar, roleid, created_date, is_enable, otp) VALUES
 ('admin', '123456', 'admin@uteshop.com', N'Quản Trị Viên UTE', '0909123456', 'default-avatar.png', 1, GETDATE(), 1, NULL);
 GO
 
--- Thêm dữ liệu mẫu cho Category (Danh mục)
 INSERT INTO dbo.Category (cate_name, icons, status) VALUES
 (N'Quần Áo Nam', N'shirt-icon.png', 1),
 (N'Đồ Điện Tử', N'phone-icon.png', 1),
 (N'Phụ Kiện Thời Trang', N'accessory-icon.png', 1);
 GO
 
--- Thêm dữ liệu mẫu cho Products (Đã tích hợp link Cloudinary chính chủ)
 INSERT INTO dbo.products (product_name, price, quantity, description, image_url, category_id) VALUES
 (N'Tai nghe Bluetooth TWS', 450000, 40, N'Tai nghe không dây âm thanh HIFI.', 'https://placehold.co/400x400/e9c46a/black?text=Tai+Nghe', 2),
 (N'Sạc dự phòng 10000mAh', 299000, 100, N'Sạc dự phòng nhỏ gọn, sạc nhanh.', 'https://placehold.co/400x400/e9c46a/black?text=Sac+Du+Phong', 2),
 (N'Bàn phím cơ Gaming', 850000, 25, N'Bàn phím cơ Red Switch, LED RGB.', 'https://placehold.co/400x400/e9c46a/black?text=Ban+Phim', 2),
 (N'Chuột không dây Silent', 150000, 60, N'Chuột click chống ồn, độ nhạy cao.', 'https://placehold.co/400x400/e9c46a/black?text=Chuot+Khong+Day', 2),
 
--- Danh mục 3: Phụ Kiện Thời Trang
 (N'Đồng hồ nam dây da', 550000, 20, N'Đồng hồ cơ nam tính, mặt kính sapphire.', 'https://placehold.co/400x400/e76f51/white?text=Dong+Ho', 3),
 (N'Mắt kính râm phân cực', 250000, 45, N'Kính mát chống tia UV400.', 'https://placehold.co/400x400/e76f51/white?text=Mat+Kinh', 3),
 (N'Thắt lưng nam da bò', 320000, 50, N'Thắt lưng da thật 100%.', 'https://placehold.co/400x400/e76f51/white?text=That+Lung', 3),
