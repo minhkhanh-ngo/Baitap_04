@@ -53,6 +53,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="${pageContext.request.contextPath}/profile">
+                            <i class="fa-solid fa-user-gear me-2"></i> Hồ sơ cá nhân
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="${pageContext.request.contextPath}/admin/category/list">
                             <i class="fa-solid fa-list me-2"></i> Quản lý Danh mục
                         </a>

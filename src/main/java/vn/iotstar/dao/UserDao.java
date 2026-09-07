@@ -10,4 +10,5 @@ public interface UserDao {
     boolean checkExistUsername(String username);
     boolean checkExistPhone(String phone);
     User getByEmail(String email);
+    void updateProfile(int userId, String fullName, String phone, String avatarName);
 }

@@ -97,4 +97,30 @@ public class UserDaoImpl implements UserDao {
             em.close();
         }
     }
+
+    @Override
+    public void updateProfile(int userId, String fullName, String phone, String avatarName) {
+        EntityManager em = JPAConfig.getEntityManager();
+        EntityTransaction trans = em.getTransaction();
+        try {
+            trans.begin();
+            User user = em.find(User.class, userId);
+            if (user != null) {
+                user.setFullName(fullName);
+                user.setPhone(phone);
+                if (avatarName != null && !avatarName.isEmpty()) {
+                    user.setAvatar(avatarName);
+                }
+                em.merge(user);
+            }
+            trans.commit();
+        } catch (Exception e) {
+            if (trans.isActive()) {
+                trans.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+    }
 }

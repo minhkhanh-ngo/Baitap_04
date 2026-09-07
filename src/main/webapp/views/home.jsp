@@ -7,12 +7,18 @@
     <meta charset="UTF-8">
     <title>Trang Chủ - UTE SHOP</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-light">
 <nav class="navbar navbar-expand-lg px-4 shadow-sm mb-4" style="background-color: #bce3ff;">
     <div class="container-fluid">
         <a class="navbar-brand fw-bold text-primary" href="${pageContext.request.contextPath}/home">UTE SHOP</a>
         <div class="ms-auto d-flex align-items-center">
+
+            <a href="${pageContext.request.contextPath}/profile" class="btn btn-outline-primary btn-sm me-2 fw-semibold">
+                <i class="fa-solid fa-user me-1"></i> Hồ sơ cá nhân
+            </a>
+
             <span class="me-3">Xin chào: <strong>${sessionScope.account.fullName}</strong></span>
             <a href="${pageContext.request.contextPath}/logout" class="btn btn-danger btn-sm">Đăng xuất</a>
         </div>
