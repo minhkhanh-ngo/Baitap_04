@@ -18,25 +18,39 @@
             <div class="card-body">
                 <form action="${pageContext.request.contextPath}/admin/product-add" method="post" enctype="multipart/form-data">
 
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-danger text-center py-2 small fw-bold shadow-sm mb-3" role="alert">
+                            <i class="fa-solid fa-triangle-exclamation me-1"></i> ${error}
+                        </div>
+                    </c:if>
+
                     <div class="mb-3">
                         <label class="form-label fw-bold">Tên sản phẩm:</label>
-                        <input type="text" name="productName" class="form-control bg-light" placeholder="Nhập tên sản phẩm..." required>
+                        <input type="text" name="productName" class="form-control bg-light" placeholder="Nhập tên sản phẩm..." required minlength="3" maxlength="100"
+                               oninvalid="if(this.validity.valueMissing){this.setCustomValidity('Vui lòng không để trống tên sản phẩm!');}else if(this.validity.tooShort){this.setCustomValidity('Tên sản phẩm phải từ 3 ký tự trở lên!');}"
+                               oninput="this.setCustomValidity('')">
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Giá (VNĐ):</label>
-                            <input type="number" step="any" name="price" class="form-control bg-light" placeholder="Ví dụ: 150000" required>
+                            <input type="number" step="any" min="0" name="price" class="form-control bg-light" placeholder="Ví dụ: 150000" required
+                                   oninvalid="this.setCustomValidity('Vui lòng nhập giá sản phẩm hợp lệ (>= 0)!')"
+                                   oninput="this.setCustomValidity('')">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Số lượng tồn kho:</label>
-                            <input type="number" name="quantity" class="form-control bg-light" placeholder="Ví dụ: 50" required>
+                            <input type="number" min="0" name="quantity" class="form-control bg-light" placeholder="Ví dụ: 50" required
+                                   oninvalid="this.setCustomValidity('Vui lòng nhập số lượng tồn kho hợp lệ!')"
+                                   oninput="this.setCustomValidity('')">
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Danh mục sản phẩm:</label>
-                        <select name="categoryId" class="form-select bg-light" required>
+                        <select name="categoryId" class="form-select bg-light" required
+                                oninvalid="this.setCustomValidity('Vui lòng chọn danh mục sản phẩm!')"
+                                oninput="this.setCustomValidity('')">
                             <option value="" disabled selected>-- Chọn danh mục sản phẩm --</option>
                             <c:forEach items="${listCategories}" var="c">
                                 <option value="${c.categoryid}">${c.cateName}</option>
@@ -46,7 +60,9 @@
 
                     <div class="mb-4">
                         <label class="form-label fw-bold">Hình ảnh sản phẩm:</label>
-                        <input type="file" name="imageFile" class="form-control bg-light" accept="image/*" required>
+                        <input type="file" name="imageFile" class="form-control bg-light" accept="image/*" required
+                               oninvalid="this.setCustomValidity('Vui lòng chọn hình ảnh cho sản phẩm!')"
+                               oninput="this.setCustomValidity('')">
                     </div>
 
                     <div class="d-flex justify-content-end gap-2">

@@ -44,6 +44,8 @@ public class ProductEditController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Product product = new Product();
+        product.setQuantity(0);
+        product.setPrice(0.0);
         String oldImages = "";
         String imageLink = "";
         String uploadedCloudUrl = "";
@@ -109,6 +111,52 @@ public class ProductEditController extends HttpServlet {
             product.setImageUrl(uploadedCloudUrl);
         } else {
             product.setImageUrl(oldImages);
+        }
+
+        String productName = product.getProductName();
+        String safeRegex = "^[\\p{L}0-9 \\.'-]+$";
+
+        if (productName == null || productName.trim().isEmpty()) {
+            req.setAttribute("error", "Tên sản phẩm không được để trống!");
+            req.setAttribute("product", product);
+            req.setAttribute("listCategories", categoryService.findAll());
+            req.getRequestDispatcher("/views/admin/product-edit.jsp").forward(req, resp);
+            return;
+        }
+
+        productName = productName.replaceAll("\\s+", " ").trim();
+        product.setProductName(productName);
+
+        if (productName.length() < 3 || productName.length() > 100) {
+            req.setAttribute("error", "Tên sản phẩm phải từ 3 đến 100 ký tự!");
+            req.setAttribute("product", product);
+            req.setAttribute("listCategories", categoryService.findAll());
+            req.getRequestDispatcher("/views/admin/product-edit.jsp").forward(req, resp);
+            return;
+        }
+
+        if (!productName.matches(safeRegex)) {
+            req.setAttribute("error", "Tên sản phẩm không được chứa ký tự đặc biệt!");
+            req.setAttribute("product", product);
+            req.setAttribute("listCategories", categoryService.findAll());
+            req.getRequestDispatcher("/views/admin/product-edit.jsp").forward(req, resp);
+            return;
+        }
+
+        if (product.getPrice() < 0) {
+            req.setAttribute("error", "Giá sản phẩm phải lớn hơn hoặc bằng 0!");
+            req.setAttribute("product", product);
+            req.setAttribute("listCategories", categoryService.findAll());
+            req.getRequestDispatcher("/views/admin/product-edit.jsp").forward(req, resp);
+            return;
+        }
+
+        if (product.getQuantity() < 0) {
+            req.setAttribute("error", "Số lượng tồn kho phải lớn hơn hoặc bằng 0!");
+            req.setAttribute("product", product);
+            req.setAttribute("listCategories", categoryService.findAll());
+            req.getRequestDispatcher("/views/admin/product-edit.jsp").forward(req, resp);
+            return;
         }
 
         productService.update(product);

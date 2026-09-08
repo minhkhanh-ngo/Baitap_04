@@ -18,28 +18,42 @@
             <div class="card-body">
                 <form action="${pageContext.request.contextPath}/admin/product/update" method="post" enctype="multipart/form-data">
 
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-danger text-center py-2 small fw-bold shadow-sm mb-3" role="alert">
+                            <i class="fa-solid fa-triangle-exclamation me-1"></i> ${error}
+                        </div>
+                    </c:if>
+
                     <input type="hidden" name="productId" value="${product.productId}">
                     <input type="hidden" name="oldImages" value="${product.imageUrl}">
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Tên sản phẩm:</label>
-                        <input type="text" class="form-control bg-light" name="productName" value="${product.productName}" required>
+                        <input type="text" class="form-control bg-light" name="productName" value="${product.productName}" required minlength="3" maxlength="100"
+                               oninvalid="if(this.validity.valueMissing){this.setCustomValidity('Vui lòng không để trống tên sản phẩm!');}else if(this.validity.tooShort){this.setCustomValidity('Tên sản phẩm phải từ 3 ký tự trở lên!');}"
+                               oninput="this.setCustomValidity('')">
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Giá (VNĐ):</label>
-                            <input type="number" class="form-control bg-light" name="price" value="${product.price}" required>
+                            <input type="number" step="any" min="0" class="form-control bg-light" name="price" value="${product.price}" required
+                                   oninvalid="this.setCustomValidity('Vui lòng nhập giá sản phẩm hợp lệ (>= 0)!')"
+                                   oninput="this.setCustomValidity('')">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Số lượng:</label>
-                            <input type="number" class="form-control bg-light" name="quantity" value="${product.quantity}" required>
+                            <input type="number" min="0" class="form-control bg-light" name="quantity" value="${product.quantity}" required
+                                   oninvalid="this.setCustomValidity('Vui lòng nhập số lượng hợp lệ!')"
+                                   oninput="this.setCustomValidity('')">
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Danh mục:</label>
-                        <select class="form-select bg-light" name="categoryId" required>
+                        <select class="form-select bg-light" name="categoryId" required
+                                oninvalid="this.setCustomValidity('Vui lòng chọn danh mục sản phẩm!')"
+                                oninput="this.setCustomValidity('')">
                             <c:forEach items="${listCategories}" var="c">
                                 <option value="${c.categoryid}" ${product.category.categoryid == c.categoryid ? 'selected' : ''}>
                                         ${c.cateName}
