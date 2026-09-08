@@ -34,6 +34,29 @@ public class CategoryAddController extends HttpServlet {
 
         String cateName = req.getParameter("cateName");
 
+        String safeRegex = "^[\\p{L}0-9 \\.'-]+$";
+
+        if (cateName == null || cateName.trim().isEmpty()) {
+            req.setAttribute("error", "Tên danh mục không được để trống!");
+            req.getRequestDispatcher("/views/admin/add-category.jsp").forward(req, resp);
+            return;
+        }
+
+        cateName = cateName.replaceAll("\\s+", " ").trim();
+
+        if (cateName.length() < 3 || cateName.length() > 50) {
+            req.setAttribute("error", "Tên danh mục phải từ 3 đến 50 ký tự!");
+            req.getRequestDispatcher("/views/admin/add-category.jsp").forward(req, resp);
+            return;
+        }
+
+        if (!cateName.matches(safeRegex)) {
+            req.setAttribute("error", "Tên danh mục không được chứa ký tự đặc biệt!");
+            req.getRequestDispatcher("/views/admin/add-category.jsp").forward(req, resp);
+            return;
+        }
+
+
         int status = 1;
         String statusStr = req.getParameter("status");
         if (statusStr != null && !statusStr.isEmpty()) {

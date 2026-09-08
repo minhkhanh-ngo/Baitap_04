@@ -18,12 +18,18 @@
             <div class="card-body">
                 <form action="${pageContext.request.contextPath}/admin/category/edit" method="post" enctype="multipart/form-data">
 
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-danger text-center py-2 small fw-bold shadow-sm mb-3" role="alert">
+                            <i class="fa-solid fa-triangle-exclamation me-1"></i> ${error}
+                        </div>
+                    </c:if>
+
                     <input type="hidden" name="categoryid" value="${category.categoryid}">
                     <input type="hidden" name="oldImages" value="${category.images}">
 
                     <div class="mb-3">
                         <label for="cateName" class="form-label fw-bold">Tên danh mục:</label>
-                        <input type="text" class="form-control bg-light" id="cateName" name="cateName" value="${category.cateName}" required>
+                        <input type="text" class="form-control bg-light" id="cateName" name="cateName" value="${category.cateName}" required minlength="3" maxlength="50">
                     </div>
 
                     <div class="mb-3">

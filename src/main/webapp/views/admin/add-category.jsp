@@ -18,9 +18,29 @@
             <div class="card-body">
                 <form action="${pageContext.request.contextPath}/admin/category/add" method="post" enctype="multipart/form-data">
 
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-danger text-center py-2 small fw-bold shadow-sm mb-3" role="alert">
+                            <i class="fa-solid fa-triangle-exclamation me-1"></i> ${error}
+                        </div>
+                    </c:if>
+
                     <div class="mb-3">
                         <label for="cateName" class="form-label fw-bold">Tên danh mục:</label>
-                        <input type="text" class="form-control bg-light" id="cateName" name="cateName" required placeholder="Nhập tên danh mục...">
+                        <input type="text" class="form-control" id="cateName" name="cateName"
+                               required
+                               minlength="3"
+                               maxlength="50"
+                               oninvalid="
+           if(this.validity.valueMissing){
+               this.setCustomValidity('Vui lòng không để trống tên!');
+           } else if(this.validity.tooShort){
+               this.setCustomValidity('Vui lòng nhập từ 3 ký tự trở lên!');
+           } else {
+               this.setCustomValidity('Dữ liệu không hợp lệ!');
+           }
+       "
+                               oninput="this.setCustomValidity('')"
+                               placeholder="Nhập tên danh mục...">
                     </div>
 
                     <div class="mb-4">

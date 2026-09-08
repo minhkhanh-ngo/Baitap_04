@@ -45,6 +45,27 @@ public class AdminProfileController extends HttpServlet {
         String fullName = req.getParameter("fullname");
         String phone = req.getParameter("phone");
 
+        String nameRegex = "^[\\p{L} \\.'-]+$";
+        if (fullName == null || fullName.trim().isEmpty()) {
+            req.setAttribute("error", "Họ và tên không được để trống!");
+            req.getRequestDispatcher("/views/admin/profile.jsp").forward(req, resp);
+            return;
+        }
+
+        fullName = fullName.replaceAll("\\s+", " ").trim();
+
+        if (!fullName.matches(nameRegex) || fullName.length() < 2 || fullName.length() > 100) {
+            req.setAttribute("error", "Họ và tên từ 2 đến 100 ký tự và không được chứa số hoặc ký tự đặc biệt!");
+            req.getRequestDispatcher("/views/admin/profile.jsp").forward(req, resp);
+            return;
+        }
+
+        if (phone != null && !phone.matches("^0[0-9]{9}$")) {
+            req.setAttribute("error", "Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0!");
+            req.getRequestDispatcher("/views/admin/profile.jsp").forward(req, resp);
+            return;
+        }
+
         String avatarName = currentUser.getAvatar();
 
         Part part = req.getPart("images");

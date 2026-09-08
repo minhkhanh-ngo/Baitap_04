@@ -67,13 +67,22 @@
           <div>
             <div class="text-center text-muted small mb-4 fw-semibold">Thông tin cá nhân</div>
 
+            <c:if test="${not empty error}">
+              <div class="alert alert-danger text-center py-2 small fw-bold shadow-sm" role="alert">
+                <i class="fa-solid fa-triangle-exclamation me-1"></i> ${error}
+              </div>
+            </c:if>
+
             <c:if test="${not empty message}">
               <div class="alert alert-success text-center py-2 small fw-bold">${message}</div>
             </c:if>
 
             <div class="mb-3">
               <label class="form-label text-muted small fw-bold">Họ và tên (Fullname)</label>
-              <input type="text" name="fullname" class="form-control" value="${sessionScope.account.fullName}" required>
+              <input type="text" name="fullname" class="form-control" value="${sessionScope.account.fullName}"
+                     required
+                     oninvalid="this.setCustomValidity('Họ và tên không được để trống!')"
+                     oninput="this.setCustomValidity('')">
             </div>
 
             <div class="mb-3">

@@ -41,7 +41,6 @@
         <div class="admin-profile-container">
             <div class="row g-0">
 
-                <!-- Phần Sidebar bên trái chứa Avatar có thể click đổi trực tiếp -->
                 <div class="col-lg-4 admin-profile-sidebar text-center">
                     <div class="position-relative d-inline-block mb-3">
                         <label for="adminAvatarFile" style="cursor: pointer;" title="Click để đổi ảnh đại diện">
@@ -79,6 +78,12 @@
                             <h4 class="fw-bold text-dark m-0 fs-5"><i class="fa-solid fa-user-gear me-2 text-secondary"></i>Chỉnh sửa hồ sơ quản trị</h4>
                         </div>
 
+                        <c:if test="${not empty error}">
+                            <div class="alert alert-danger text-center py-2 small fw-bold shadow-sm" role="alert">
+                                <i class="fa-solid fa-triangle-exclamation me-1"></i> ${error}
+                            </div>
+                        </c:if>
+
                         <c:if test="${not empty message}">
                             <div class="alert alert-success text-center py-2 small fw-bold shadow-sm" role="alert">
                                 <i class="fa-solid fa-circle-check me-1"></i> ${message}
@@ -87,7 +92,10 @@
 
                         <div class="mb-3">
                             <label class="form-label text-muted small fw-bold">Họ và tên (Fullname)</label>
-                            <input type="text" name="fullname" class="form-control" value="${sessionScope.account.fullName}" required>
+                            <input type="text" name="fullname" class="form-control" value="${sessionScope.account.fullName}"
+                                   required
+                                   oninvalid="this.setCustomValidity('Họ và tên không được để trống!')"
+                                   oninput="this.setCustomValidity('')">
                         </div>
 
                         <div class="mb-3">

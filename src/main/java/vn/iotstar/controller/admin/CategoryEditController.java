@@ -39,9 +39,11 @@ public class CategoryEditController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Category category = new Category();
+        category.setStatus(1);
         String oldImages = "";
+        String newImageFile = "";
 
         if (JakartaServletFileUpload.isMultipartContent(req)) {
             JakartaServletFileUpload<DiskFileItem, ? extends org.apache.commons.fileupload2.core.FileItemFactory<DiskFileItem>> upload =
@@ -62,8 +64,6 @@ public class CategoryEditController extends HttpServlet {
                             case "status" -> {
                                 if (fieldValue != null && !fieldValue.isEmpty()) {
                                     category.setStatus(Integer.parseInt(fieldValue));
-                                } else {
-                                    category.setStatus(1);
                                 }
                             }
                             case "oldImages" -> oldImages = fieldValue;
@@ -74,7 +74,7 @@ public class CategoryEditController extends HttpServlet {
                             String originalFileName = Paths.get(item.getName()).getFileName().toString();
                             int index = originalFileName.lastIndexOf(".");
                             String ext = originalFileName.substring(index + 1);
-                            String fileName = System.currentTimeMillis() + "." + ext;
+                            newImageFile = System.currentTimeMillis() + "." + ext;
 
                             File uploadDir = new File(Constant.DIR);
                             if (!uploadDir.exists()) {
@@ -84,9 +84,8 @@ public class CategoryEditController extends HttpServlet {
                                 }
                             }
 
-                            File file = new File(Constant.DIR + File.separator + fileName);
+                            File file = new File(Constant.DIR + File.separator + newImageFile);
                             item.write(file.toPath());
-                            category.setImages(fileName);
                         }
                     }
                 }
@@ -95,8 +94,37 @@ public class CategoryEditController extends HttpServlet {
             }
         }
 
-        if (category.getImages() == null || category.getImages().isEmpty()) {
+        if (newImageFile != null && !newImageFile.isEmpty()) {
+            category.setImages(newImageFile);
+        } else {
             category.setImages(oldImages);
+        }
+
+        String cateName = category.getCateName();
+        String safeRegex = "^[\\p{L}0-9 \\.'-]+$";
+
+        if (cateName == null || cateName.trim().isEmpty()) {
+            req.setAttribute("error", "Tên danh mục không được để trống!");
+            req.setAttribute("category", category);
+            req.getRequestDispatcher("/views/admin/edit-category.jsp").forward(req, resp);
+            return;
+        }
+
+        cateName = cateName.replaceAll("\\s+", " ").trim();
+        category.setCateName(cateName);
+
+        if (cateName.length() < 3 || cateName.length() > 50) {
+            req.setAttribute("error", "Tên danh mục phải từ 3 đến 50 ký tự!");
+            req.setAttribute("category", category);
+            req.getRequestDispatcher("/views/admin/edit-category.jsp").forward(req, resp);
+            return;
+        }
+
+        if (!cateName.matches(safeRegex)) {
+            req.setAttribute("error", "Tên danh mục không được chứa ký tự đặc biệt!");
+            req.setAttribute("category", category);
+            req.getRequestDispatcher("/views/admin/edit-category.jsp").forward(req, resp);
+            return;
         }
 
         categoryService.update(category);
