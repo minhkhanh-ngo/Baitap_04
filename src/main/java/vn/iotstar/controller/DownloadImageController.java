@@ -18,10 +18,20 @@ public class DownloadImageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String fileName = req.getParameter("fname");
-        File file = new File(Constant.DIR + "/" + fileName);
-        resp.setContentType("image/jpeg");
+        if (fileName == null || fileName.trim().isEmpty()) {
+            return;
+        }
 
-        if (file.exists()) {
+        File file = new File(Constant.DIR, fileName);
+
+        if (file.exists() && file.isFile()) {
+            String mimeType = getServletContext().getMimeType(file.getName());
+            if (mimeType == null) {
+                mimeType = "application/octet-stream";
+            }
+            resp.setContentType(mimeType);
+            resp.setContentLength((int) file.length());
+
             try (FileInputStream fis = new FileInputStream(file);
                  OutputStream out = resp.getOutputStream()) {
                 byte[] buffer = new byte[4096];
@@ -30,6 +40,8 @@ public class DownloadImageController extends HttpServlet {
                     out.write(buffer, 0, bytesRead);
                 }
             }
+        } else {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 }

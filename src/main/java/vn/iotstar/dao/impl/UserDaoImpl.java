@@ -108,7 +108,7 @@ public class UserDaoImpl implements UserDao {
             if (user != null) {
                 user.setFullName(fullName);
                 user.setPhone(phone);
-                if (avatarName != null && !avatarName.isEmpty()) {
+                if (avatarName != null) {
                     user.setAvatar(avatarName);
                 }
                 em.merge(user);

@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <title>Hồ sơ cá nhân - UTE SHOP</title>
 
@@ -48,15 +48,25 @@
               <label for="avatarFile" style="cursor: pointer;" title="Click để đổi ảnh đại diện">
                 <c:choose>
                   <c:when test="${not empty sessionScope.account.avatar}">
-                    <img src="${pageContext.request.contextPath}/uploads/${sessionScope.account.avatar}" class="rounded-circle shadow border border-3 border-white" style="width: 120px; height: 120px; object-fit: cover;" alt="Avatar">
+                    <c:choose>
+                      <c:when test="${sessionScope.account.avatar.startsWith('http')}">
+                        <img src="${sessionScope.account.avatar}" class="rounded-circle shadow border border-3 border-white" style="width: 120px; height: 120px; object-fit: cover;" alt="Avatar">
+                      </c:when>
+                      <c:otherwise>
+                        <c:url value="/image" var="imgUrl">
+                          <c:param name="fname" value="${sessionScope.account.avatar}" />
+                        </c:url>
+                        <img src="${imgUrl}" onerror="this.src='https://ui-avatars.com/api/?name=${sessionScope.account.fullName}&background=6c757d&color=ffffff'" class="rounded-circle shadow border border-3 border-white" style="width: 120px; height: 120px; object-fit: cover;" alt="Avatar">
+                      </c:otherwise>
+                    </c:choose>
                   </c:when>
                   <c:otherwise>
-                    <img src="https://ui-avatars.com/api/?name=${sessionScope.account.fullName}&background=ffffff&color=0d6efd" class="rounded-circle shadow border border-3 border-white" style="width: 120px; height: 120px;" alt="Avatar">
+                    <img src="https://ui-avatars.com/api/?name=${sessionScope.account.fullName}&background=6c757d&color=ffffff" class="rounded-circle shadow border border-3 border-white" style="width: 120px; height: 120px; object-fit: cover;" alt="Avatar">
                   </c:otherwise>
                 </c:choose>
                 <span class="position-absolute bottom-0 start-50 translate-middle-x badge rounded-pill bg-dark text-white border border-light px-2 py-1 shadow-sm" style="font-size: 11px;">
-                                    <i class="fa-solid fa-camera me-1"></i> Đổi ảnh
-                                </span>
+                    <i class="fa-solid fa-camera me-1"></i> Đổi ảnh
+                </span>
               </label>
               <input type="file" id="avatarFile" name="images" accept="image/*" class="d-none">
             </div>
@@ -67,27 +77,28 @@
           <div>
             <div class="text-center text-muted small mb-4 fw-semibold">Thông tin cá nhân</div>
 
-            <c:if test="${not empty error}">
-              <div class="alert alert-danger text-center py-2 small fw-bold shadow-sm" role="alert">
-                <i class="fa-solid fa-triangle-exclamation me-1"></i> ${error}
-              </div>
-            </c:if>
-
             <c:if test="${not empty message}">
-              <div class="alert alert-success text-center py-2 small fw-bold">${message}</div>
+              <div class="alert alert-success text-center py-2 small fw-bold shadow-sm mb-3" role="alert">
+                <i class="fa-solid fa-circle-check me-1"></i> ${message}
+              </div>
             </c:if>
 
             <div class="mb-3">
               <label class="form-label text-muted small fw-bold">Họ và tên (Fullname)</label>
-              <input type="text" name="fullname" class="form-control" value="${sessionScope.account.fullName}"
-                     required
-                     oninvalid="this.setCustomValidity('Họ và tên không được để trống!')"
-                     oninput="this.setCustomValidity('')">
+              <input type="text" name="fullname" class="form-control ${not empty fullnameError ? 'is-invalid' : ''}"
+                     value="${not empty fullname ? fullname : sessionScope.account.fullName}">
+              <c:if test="${not empty fullnameError}">
+                <div class="invalid-feedback">${fullnameError}</div>
+              </c:if>
             </div>
 
             <div class="mb-3">
               <label class="form-label text-muted small fw-bold">Số điện thoại (Phone number)</label>
-              <input type="tel" name="phone" class="form-control" value="${sessionScope.account.phone}" required>
+              <input type="tel" name="phone" class="form-control ${not empty phoneError ? 'is-invalid' : ''}"
+                     value="${not empty phone ? phone : sessionScope.account.phone}">
+              <c:if test="${not empty phoneError}">
+                <div class="invalid-feedback">${phoneError}</div>
+              </c:if>
             </div>
           </div>
 

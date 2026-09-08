@@ -63,10 +63,19 @@ public class LoginController extends HttpServlet {
             isRememberMe = true;
         }
 
-        String alertMsg = "";
-        if (username.isEmpty() || password.isEmpty()) {
-            alertMsg = "Tài khoản hoặc mật khẩu không được rỗng";
-            req.setAttribute("alert", alertMsg);
+        boolean hasError = false;
+        if (username == null || username.trim().isEmpty()) {
+            req.setAttribute("usernameError", "Tên đăng nhập không được để trống");
+            hasError = true;
+        }
+        if (password == null || password.trim().isEmpty()) {
+            req.setAttribute("passwordError", "Mật khẩu không được để trống");
+            hasError = true;
+        }
+
+        req.setAttribute("username", username);
+
+        if (hasError) {
             req.getRequestDispatcher("/views/login.jsp").forward(req, resp);
             return;
         }
@@ -74,8 +83,7 @@ public class LoginController extends HttpServlet {
         User user = userService.login(username, password);
         if (user != null) {
             if (!user.isEnable()) {
-                alertMsg = "Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email để nhận mã OTP!";
-                req.setAttribute("alert", alertMsg);
+                req.setAttribute("alert", "Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email để nhận mã OTP!");
                 req.getRequestDispatcher("/views/login.jsp").forward(req, resp);
                 return;
             }
@@ -87,8 +95,7 @@ public class LoginController extends HttpServlet {
             }
             resp.sendRedirect(req.getContextPath() + "/waiting");
         } else {
-            alertMsg = "Tài khoản hoặc mật khẩu không đúng";
-            req.setAttribute("alert", alertMsg);
+            req.setAttribute("alert", "Tên đăng nhập hoặc mật khẩu không đúng");
             req.getRequestDispatcher("/views/login.jsp").forward(req, resp);
         }
     }

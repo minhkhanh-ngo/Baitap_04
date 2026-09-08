@@ -21,7 +21,6 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/home">Home</a></li>
-                <!-- Đã bổ sung đầy đủ id và aria cho menu Shop -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdownShop" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownShop">
@@ -38,7 +37,17 @@
                             <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle gap-2" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <c:choose>
                                     <c:when test="${not empty sessionScope.account.avatar}">
-                                        <img src="${pageContext.request.contextPath}/uploads/${sessionScope.account.avatar}" class="rounded-circle border" style="width: 32px; height: 32px; object-fit: cover;" alt="Avatar">
+                                        <c:choose>
+                                            <c:when test="${sessionScope.account.avatar.startsWith('http')}">
+                                                <img src="${sessionScope.account.avatar}" class="rounded-circle border" style="width: 32px; height: 32px; object-fit: cover;" alt="Avatar">
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:url value="/image" var="navImgUrl">
+                                                    <c:param name="fname" value="${sessionScope.account.avatar}" />
+                                                </c:url>
+                                                <img src="${navImgUrl}" class="rounded-circle border" style="width: 32px; height: 32px; object-fit: cover;" alt="Avatar">
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:when>
                                     <c:otherwise>
                                         <img src="https://ui-avatars.com/api/?name=${sessionScope.account.fullName}&background=495057&color=ffffff" class="rounded-circle" style="width: 32px; height: 32px;" alt="Avatar">

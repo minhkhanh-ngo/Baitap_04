@@ -54,7 +54,7 @@
                                             <c:url value="/image" var="adminImgUrl">
                                                 <c:param name="fname" value="${sessionScope.account.avatar}" />
                                             </c:url>
-                                            <img src="${adminImgUrl}" onerror="this.src='https://ui-avatars.com/api/?name=${sessionScope.account.fullName}&background=6c757d&color=ffffff'" class="rounded-circle shadow border border-3 border-white" style="width: 120px; height: 120px; object-fit: cover;" alt="Admin Avatar">
+                                            <img src="${adminImgUrl}" class="rounded-circle shadow border border-3 border-white" style="width: 120px; height: 120px; object-fit: cover;" alt="Admin Avatar">
                                         </c:otherwise>
                                     </c:choose>
                                 </c:when>
@@ -78,29 +78,28 @@
                             <h4 class="fw-bold text-dark m-0 fs-5"><i class="fa-solid fa-user-gear me-2 text-secondary"></i>Chỉnh sửa hồ sơ quản trị</h4>
                         </div>
 
-                        <c:if test="${not empty error}">
-                            <div class="alert alert-danger text-center py-2 small fw-bold shadow-sm" role="alert">
-                                <i class="fa-solid fa-triangle-exclamation me-1"></i> ${error}
-                            </div>
-                        </c:if>
-
                         <c:if test="${not empty message}">
-                            <div class="alert alert-success text-center py-2 small fw-bold shadow-sm" role="alert">
+                            <div class="alert alert-success text-center py-2 small fw-bold shadow-sm mb-3" role="alert">
                                 <i class="fa-solid fa-circle-check me-1"></i> ${message}
                             </div>
                         </c:if>
 
                         <div class="mb-3">
                             <label class="form-label text-muted small fw-bold">Họ và tên (Fullname)</label>
-                            <input type="text" name="fullname" class="form-control" value="${sessionScope.account.fullName}"
-                                   required
-                                   oninvalid="this.setCustomValidity('Họ và tên không được để trống!')"
-                                   oninput="this.setCustomValidity('')">
+                            <input type="text" name="fullname" class="form-control ${not empty fullnameError ? 'is-invalid' : ''}"
+                                   value="${not empty fullname ? fullname : sessionScope.account.fullName}" required>
+                            <c:if test="${not empty fullnameError}">
+                                <div class="invalid-feedback">${fullnameError}</div>
+                            </c:if>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label text-muted small fw-bold">Số điện thoại (Phone number)</label>
-                            <input type="tel" name="phone" class="form-control" value="${sessionScope.account.phone}">
+                            <input type="tel" name="phone" class="form-control ${not empty phoneError ? 'is-invalid' : ''}"
+                                   value="${not empty phone ? phone : sessionScope.account.phone}">
+                            <c:if test="${not empty phoneError}">
+                                <div class="invalid-feedback">${phoneError}</div>
+                            </c:if>
                         </div>
 
                         <div class="mb-3">

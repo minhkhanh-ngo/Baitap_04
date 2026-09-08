@@ -12,6 +12,7 @@ import vn.iotstar.dao.UserDao;
 import vn.iotstar.dao.impl.UserDaoImpl;
 import vn.iotstar.entity.User;
 import vn.iotstar.util.Constant;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -24,7 +25,8 @@ public class AdminProfileController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getSession().getAttribute("account") == null) {
+        HttpSession session = req.getSession();
+        if (session.getAttribute("account") == null) {
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
@@ -45,23 +47,32 @@ public class AdminProfileController extends HttpServlet {
         String fullName = req.getParameter("fullname");
         String phone = req.getParameter("phone");
 
+        req.setAttribute("fullname", fullName);
+        req.setAttribute("phone", phone);
+
+        boolean hasError = false;
         String nameRegex = "^[\\p{L} \\.'-]+$";
+
         if (fullName == null || fullName.trim().isEmpty()) {
-            req.setAttribute("error", "Họ và tên không được để trống!");
-            req.getRequestDispatcher("/views/admin/profile.jsp").forward(req, resp);
-            return;
+            req.setAttribute("fullnameError", "Họ và tên không được để trống!");
+            hasError = true;
+        } else {
+            fullName = fullName.replaceAll("\\s+", " ").trim();
+            if (!fullName.matches(nameRegex) || fullName.length() < 2 || fullName.length() > 100) {
+                req.setAttribute("fullnameError", "Họ và tên từ 2 đến 100 ký tự và không được chứa số hoặc ký tự đặc biệt!");
+                hasError = true;
+            }
         }
 
-        fullName = fullName.replaceAll("\\s+", " ").trim();
-
-        if (!fullName.matches(nameRegex) || fullName.length() < 2 || fullName.length() > 100) {
-            req.setAttribute("error", "Họ và tên từ 2 đến 100 ký tự và không được chứa số hoặc ký tự đặc biệt!");
-            req.getRequestDispatcher("/views/admin/profile.jsp").forward(req, resp);
-            return;
+        if (phone == null || phone.trim().isEmpty()) {
+            req.setAttribute("phoneError", "Số điện thoại không được để trống!");
+            hasError = true;
+        } else if (!phone.matches("^0[0-9]{9}$")) {
+            req.setAttribute("phoneError", "Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0!");
+            hasError = true;
         }
 
-        if (phone != null && !phone.matches("^0[0-9]{9}$")) {
-            req.setAttribute("error", "Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0!");
+        if (hasError) {
             req.getRequestDispatcher("/views/admin/profile.jsp").forward(req, resp);
             return;
         }
@@ -70,15 +81,20 @@ public class AdminProfileController extends HttpServlet {
 
         Part part = req.getPart("images");
         if (part != null && part.getSize() > 0) {
-            File uploadDir = new File(Constant.DIR);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
+            String submittedFileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+            if (submittedFileName != null && !submittedFileName.trim().isEmpty()) {
+                int index = submittedFileName.lastIndexOf(".");
+                String ext = (index != -1) ? submittedFileName.substring(index + 1) : "jpg";
+                avatarName = System.currentTimeMillis() + "." + ext;
+
+                File uploadDir = new File(Constant.DIR);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs();
+                }
+
+                File file = new File(Constant.DIR + File.separator + avatarName);
+                part.write(file.toPath().toString());
             }
-
-            String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-            avatarName = System.currentTimeMillis() + "_" + fileName;
-
-            part.write(Constant.DIR + File.separator + avatarName);
         }
 
         userDao.updateProfile(currentUser.getId(), fullName, phone, avatarName);

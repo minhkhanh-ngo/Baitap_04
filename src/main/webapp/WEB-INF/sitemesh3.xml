@@ -5,6 +5,7 @@
     <mapping path="/register*" decorator="/common/auth.jsp" />
     <mapping path="/forgot-password*" decorator="/common/auth.jsp" />
     <mapping path="/reset-password*" decorator="/common/auth.jsp" />
+    <mapping path="/verify*" decorator="/common/auth.jsp" />
 
     <mapping path="/admin/*" decorator="/common/admin.jsp" />
 
