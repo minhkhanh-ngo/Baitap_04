@@ -26,9 +26,16 @@ public class RegisterController extends HttpServlet {
 
         String username = req.getParameter("username");
         String password = req.getParameter("password");
+        String repassword = req.getParameter("repassword"); // Lấy giá trị nhập lại mật khẩu
         String email = req.getParameter("email");
         String fullname = req.getParameter("fullname");
         String phone = req.getParameter("phone");
+
+        if (!password.equals(repassword)) {
+            req.setAttribute("alert", "Mật khẩu nhập lại không khớp!");
+            req.getRequestDispatcher("/views/register.jsp").forward(req, resp);
+            return;
+        }
 
         UserService service = new UserServiceImpl();
         if (service.checkExistUsername(username)) {

@@ -1,11 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<!DOCTYPE html>
-<html lang="vi">
+<title>Hồ sơ cá nhân - UTE SHOP</title>
+
 <head>
-  <meta charset="UTF-8">
-  <title>Hồ sơ cá nhân</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .profile-container {
@@ -37,20 +34,10 @@
       border-color: #0d6efd;
       box-shadow: none;
     }
-    .section-title {
-      font-size: 13px;
-      letter-spacing: 1px;
-      font-weight: 700;
-      color: #a0aec0;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-    }
   </style>
 </head>
-<body class="bg-light">
 
-<!-- Thêm py-5 để tạo khoảng cách đều trên và dưới, giúp khung nằm cân đối giữa trang và footer không bị dính -->
-<div class="container py-5">
+<div class="container py-2">
   <form action="${pageContext.request.contextPath}/profile" method="post" enctype="multipart/form-data">
     <div class="profile-container">
       <div class="row g-0">
@@ -107,21 +94,20 @@
   </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  document.getElementById('avatarFile').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const imgElement = document.querySelector('.profile-sidebar img');
-        if (imgElement) {
-          imgElement.src = e.target.result;
+<content tag="script">
+  <script>
+    document.getElementById('avatarFile').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const imgElement = document.querySelector('.profile-sidebar img');
+          if (imgElement) {
+            imgElement.src = e.target.result;
+          }
         }
+        reader.readAsDataURL(file);
       }
-      reader.readAsDataURL(file);
-    }
-  });
-</script>
-</body>
-</html>
+    });
+  </script>
+</content>

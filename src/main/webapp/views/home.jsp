@@ -7,14 +7,14 @@
     <title>Trang Chủ - UTE SHOP</title>
 </head>
 <body>
-<div class="container px-4 px-lg-5 mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-        <h3 class="fw-bold">10 Sản phẩm mới nhất</h3>
+<div class="container px-4 px-lg-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold m-0">Sản phẩm mới nhất</h3>
         <a href="${pageContext.request.contextPath}/product" class="btn btn-outline-dark btn-sm">Xem tất cả sản phẩm</a>
     </div>
 
     <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-
         <c:forEach items="${listNewProducts}" var="p">
             <div class="col mb-5">
                 <div class="card h-100 shadow-sm border-0">
@@ -39,8 +39,8 @@
                 </div>
             </div>
         </c:forEach>
-
     </div>
+
 </div>
 </body>
 </html>
