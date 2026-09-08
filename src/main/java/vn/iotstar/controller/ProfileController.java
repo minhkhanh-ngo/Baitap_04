@@ -44,7 +44,8 @@ public class ProfileController extends HttpServlet {
 
         String fullName = req.getParameter("fullname");
         String phone = req.getParameter("phone");
-        String avatarName = "";
+
+        String avatarName = currentUser.getAvatar();
 
         Part part = req.getPart("images");
         if (part != null && part.getSize() > 0) {
@@ -61,7 +62,7 @@ public class ProfileController extends HttpServlet {
 
         currentUser.setFullName(fullName);
         currentUser.setPhone(phone);
-        if (!avatarName.isEmpty()) currentUser.setAvatar(avatarName);
+        currentUser.setAvatar(avatarName);
         session.setAttribute("account", currentUser);
 
         req.setAttribute("message", "Cập nhật hồ sơ thành công!");

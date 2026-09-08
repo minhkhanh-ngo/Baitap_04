@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemesh>
-    <mapping path="/*" decorator="/common/web.jsp" />
+    <mapping path="/api/*" excl="true" />
+    <mapping path="/login*" decorator="/common/auth.jsp" />
+    <mapping path="/register*" decorator="/common/auth.jsp" />
+    <mapping path="/forgot-password*" decorator="/common/auth.jsp" />
+    <mapping path="/reset-password*" decorator="/common/auth.jsp" />
+
     <mapping path="/admin/*" decorator="/common/admin.jsp" />
 
-    <mapping path="/api/*" excl="true" />
+    <mapping path="/product*" decorator="/common/sub-layout.jsp" />
+    <mapping path="/profile*" decorator="/common/sub-layout.jsp" />
+
+    <mapping path="/home" decorator="/common/web.jsp" />
+    <mapping path="/" decorator="/common/web.jsp" />
 </sitemesh>

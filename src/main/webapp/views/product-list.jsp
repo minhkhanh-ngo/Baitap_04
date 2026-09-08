@@ -4,22 +4,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
     <title>Danh sách Sản phẩm - UTE SHOP</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-light">
-<nav class="navbar navbar-expand-lg px-4 shadow-sm mb-4" style="background-color: #bce3ff;">
-    <div class="container-fluid">
-        <a class="navbar-brand fw-bold text-primary" href="${pageContext.request.contextPath}/home">UTE SHOP</a>
-        <div class="ms-auto d-flex align-items-center">
-            <span class="me-3">Xin chào: <strong>${sessionScope.account.fullName}</strong></span>
-            <a href="${pageContext.request.contextPath}/logout" class="btn btn-danger btn-sm">Đăng xuất</a>
-        </div>
-    </div>
-</nav>
-
-<div class="container">
+<body>
+<div class="container py-5">
     <nav aria-label="breadcrumb" class="mb-3 mt-2">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/home" class="text-decoration-none">Trang chủ</a></li>
@@ -27,8 +15,8 @@
         </ol>
     </nav>
 
-    <form action="${pageContext.request.contextPath}/product" method="get" class="row g-2 mb-4 bg-white p-3 shadow-sm rounded">
-        <div class="col-md-3">
+    <form action="${pageContext.request.contextPath}/product" method="get" class="row g-2 mb-4 bg-white p-3 shadow-sm rounded align-items-center">
+        <div class="col-md-4">
             <input type="text" name="keyword" class="form-control" placeholder="Tìm tên sản phẩm..." value="${keyword}">
         </div>
         <div class="col-md-3">
@@ -48,9 +36,8 @@
                 <option value="priceDesc" ${sort == 'priceDesc' ? 'selected' : ''}>Giá: Giảm dần</option>
             </select>
         </div>
-        <div class="col-md-3 d-flex gap-2">
-            <button type="submit" class="btn btn-primary w-50">Tìm kiếm</button>
-            <a href="${pageContext.request.contextPath}/home" class="btn btn-outline-secondary w-50">Về trang chủ</a>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-dark w-100">Tìm kiếm</button>
         </div>
     </form>
 
@@ -74,7 +61,7 @@
                                     <fmt:formatNumber value="${p.price}" type="number" groupingUsed="true"/> đ
                                 </p>
                                 <p class="card-text text-muted small mb-3">${p.category.cateName}</p>
-                                <a href="${pageContext.request.contextPath}/product-detail?id=${p.productId}" class="btn btn-primary btn-sm mt-auto w-100">Xem chi tiết</a>
+                                <a href="${pageContext.request.contextPath}/product-detail?id=${p.productId}" class="btn btn-dark btn-sm mt-auto w-100">Xem chi tiết</a>
                             </div>
                         </div>
                     </div>

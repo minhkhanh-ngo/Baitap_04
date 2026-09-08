@@ -4,74 +4,124 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Cập Nhật Hồ Sơ</title>
+  <title>Hồ sơ cá nhân</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .profile-container {
+      max-width: 950px;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .profile-sidebar {
+      background: #495057;
+      color: #fff;
+      padding: 50px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .form-control {
+      background-color: #f8f9fa;
+      border: 1px solid #edf2f7;
+      padding: 10px 15px;
+      font-size: 14px;
+      border-radius: 10px;
+    }
+    .form-control:focus {
+      background-color: #fff;
+      border-color: #0d6efd;
+      box-shadow: none;
+    }
+    .section-title {
+      font-size: 13px;
+      letter-spacing: 1px;
+      font-weight: 700;
+      color: #a0aec0;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body class="bg-light">
 
-<div class="container mt-5 mb-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card shadow-sm border-0 rounded-4">
-        <div class="card-header bg-primary text-white text-center py-3 rounded-top-4">
-          <h4 class="mb-0 fw-bold">Cập Nhật Hồ Sơ Cá Nhân</h4>
-        </div>
-        <div class="card-body p-4">
+<!-- Thêm py-5 để tạo khoảng cách đều trên và dưới, giúp khung nằm cân đối giữa trang và footer không bị dính -->
+<div class="container py-5">
+  <form action="${pageContext.request.contextPath}/profile" method="post" enctype="multipart/form-data">
+    <div class="profile-container">
+      <div class="row g-0">
 
-          <c:if test="${not empty message}">
-            <div class="alert alert-success text-center fw-bold">${message}</div>
-          </c:if>
-
-          <form action="${pageContext.request.contextPath}/profile" method="post" enctype="multipart/form-data">
-
-            <div class="text-center mb-4">
-              <c:choose>
-                <c:when test="${not empty sessionScope.account.avatar}">
-                  <img src="${pageContext.request.contextPath}/uploads/${sessionScope.account.avatar}" class="rounded-circle shadow-sm" style="width: 120px; height: 120px; object-fit: cover;" alt="Avatar">
-                </c:when>
-                <c:otherwise>
-                  <img src="https://ui-avatars.com/api/?name=${sessionScope.account.fullName}&background=random" class="rounded-circle shadow-sm" style="width: 120px; height: 120px;" alt="Avatar">
-                </c:otherwise>
-              </c:choose>
+        <div class="col-lg-4 profile-sidebar">
+          <div class="text-center">
+            <div class="position-relative d-inline-block">
+              <label for="avatarFile" style="cursor: pointer;" title="Click để đổi ảnh đại diện">
+                <c:choose>
+                  <c:when test="${not empty sessionScope.account.avatar}">
+                    <img src="${pageContext.request.contextPath}/uploads/${sessionScope.account.avatar}" class="rounded-circle shadow border border-3 border-white" style="width: 120px; height: 120px; object-fit: cover;" alt="Avatar">
+                  </c:when>
+                  <c:otherwise>
+                    <img src="https://ui-avatars.com/api/?name=${sessionScope.account.fullName}&background=ffffff&color=0d6efd" class="rounded-circle shadow border border-3 border-white" style="width: 120px; height: 120px;" alt="Avatar">
+                  </c:otherwise>
+                </c:choose>
+                <span class="position-absolute bottom-0 start-50 translate-middle-x badge rounded-pill bg-dark text-white border border-light px-2 py-1 shadow-sm" style="font-size: 11px;">
+                                    <i class="fa-solid fa-camera me-1"></i> Đổi ảnh
+                                </span>
+              </label>
+              <input type="file" id="avatarFile" name="images" accept="image/*" class="d-none">
             </div>
+          </div>
+        </div>
+
+        <div class="col-lg-8 p-4 p-lg-5 d-flex flex-column justify-content-between">
+          <div>
+            <div class="text-center text-muted small mb-4 fw-semibold">Thông tin cá nhân</div>
+
+            <c:if test="${not empty message}">
+              <div class="alert alert-success text-center py-2 small fw-bold">${message}</div>
+            </c:if>
 
             <div class="mb-3">
-              <label class="form-label fw-bold">Họ và Tên:</label>
+              <label class="form-label text-muted small fw-bold">Họ và tên (Fullname)</label>
               <input type="text" name="fullname" class="form-control" value="${sessionScope.account.fullName}" required>
             </div>
 
             <div class="mb-3">
-              <label class="form-label fw-bold">Số điện thoại:</label>
+              <label class="form-label text-muted small fw-bold">Số điện thoại (Phone number)</label>
               <input type="tel" name="phone" class="form-control" value="${sessionScope.account.phone}" required>
             </div>
+          </div>
 
-            <div class="mb-4">
-              <label class="form-label fw-bold">Ảnh đại diện mới:</label>
-              <input type="file" name="images" class="form-control" accept="image/*">
-            </div>
-
-            <!-- Các nút thao tác ở dưới cùng -->
-            <div class="d-grid gap-2">
-              <button type="submit" class="btn btn-primary fw-bold py-2">Lưu thay đổi</button>
-
-              <c:choose>
-                <c:when test="${sessionScope.account.roleid == 1}">
-                  <a href="${pageContext.request.contextPath}/admin/home" class="btn btn-outline-secondary fw-bold py-2">Quay lại trang chủ Admin</a>
-                </c:when>
-                <c:otherwise>
-                  <a href="${pageContext.request.contextPath}/home" class="btn btn-outline-secondary fw-bold py-2">Quay lại trang chủ</a>
-                </c:otherwise>
-              </c:choose>
-            </div>
-
-          </form>
+          <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-dark py-2 fw-bold rounded-pill shadow-sm">
+              Lưu thông tin
+            </button>
+          </div>
         </div>
+
       </div>
     </div>
-  </div>
+  </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.getElementById('avatarFile').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const imgElement = document.querySelector('.profile-sidebar img');
+        if (imgElement) {
+          imgElement.src = e.target.result;
+        }
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
 </body>
 </html>
